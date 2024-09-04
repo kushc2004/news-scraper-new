@@ -1,0 +1,8 @@
+{
+    "functions": {
+      "api/scraper.js": {
+        "schedule": "0 0 * * *"
+      }
+    }
+}
+  
