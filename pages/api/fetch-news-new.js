@@ -84,7 +84,7 @@ const saveArticlesToSupabase = async (articles) => {
     const { error: delError } = await supabase
         .from('latest_insights')
         .delete()
-        .neq('id', '');
+        .neq('id', 1);
 
     const { data, error } = await supabase.from('latest_insights').insert(articles);
     
