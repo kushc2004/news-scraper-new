@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient'; // Import the Supabase client
 const links = {
   "agritech": "https://startupnews.fyi/category/agritech/",
   "artificial-intelligence": "https://startupnews.fyi/category/artificial-intelligence/",
-  "general": "https://startupnews.fyi/category/general/",
+  "edtech": "https://startupnews.fyi/category/ecommerce/",
 };
 
 // Function to fetch articles from a specific subcategory
@@ -81,8 +81,9 @@ const fetchArticleSummary = async (articleUrl) => {
 // Function to save articles in Supabase
 const saveArticlesToSupabase = async (articles) => {
   try {
+    const { deldata, delerror } = await supabase.from('latest_insights').delete();
     const { data, error } = await supabase.from('latest_insights').insert(articles);
-
+    
     if (error) {
       console.error('Error saving articles to Supabase:', error.message);
     } else {
@@ -95,48 +96,31 @@ const saveArticlesToSupabase = async (articles) => {
 
 // Main API handler
 export default async function handler(req, res) {
-  // Authorization check for cron job security
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' });
-  }
-
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ message: 'Unauthorized' });
   }
 
   try {
     const allArticles = {};
 
     // Fetch articles for all subcategories in parallel
-    await Promise.all(
-      Object.entries(links).map(async ([subcategory, link]) => {
-        const articles = await fetchArticlesFromSubcategory(link);
+    await Promise.all(Object.entries(links).map(async ([subcategory, link]) => {
+      const articles = await fetchArticlesFromSubcategory(link);
 
-        // Fetch summaries for all articles in parallel
-        const articlesWithSummaries = await Promise.all(
-          articles.map(async (article) => {
-            const summary = await fetchArticleSummary(article.articleUrl);
-            return {
-              subcategory,
-              title: article.title,
-              date: article.date,
-              article_url: article.articleUrl,
-              summary,
-            };
-          })
-        );
+      // Fetch summaries for all articles in parallel
+      const articlesWithSummaries = await Promise.all(articles.map(async (article) => {
+        const summary = await fetchArticleSummary(article.articleUrl);
+        return { subcategory, title: article.title, date: article.date, article_url: article.articleUrl, summary };
+      }));
 
-        // Add articles to the overall result, keyed by subcategory
-        allArticles[subcategory] = articlesWithSummaries;
+      // Add articles to the overall result, keyed by subcategory
+      allArticles[subcategory] = articlesWithSummaries;
 
-        // Save articles to Supabase
-        await saveArticlesToSupabase(articlesWithSummaries);
-      })
-    );
+      // Save articles to Supabase
+      await saveArticlesToSupabase(articlesWithSummaries);
+    }));
 
-    res
-      .status(200)
-      .json({ message: 'Articles fetched and saved successfully!', allArticles });
+    res.status(200).json({ message: 'Articles fetched and saved successfully!', allArticles });
   } catch (error) {
     console.error('Error in handler:', error.message);
     res.status(500).json({ error: 'Failed to fetch articles' });
