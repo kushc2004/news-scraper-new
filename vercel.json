@@ -1,8 +1,7 @@
 {
-    "functions": {
-      "api/fetch-news-new.js": {
-        "schedule": "0 0 * * *"
-      }
-    }
+    "crons": [{
+      "path": "api/fetch-news-new",
+      "schedule": "0 10 * * *"
+    }]
 }
   
