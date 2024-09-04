@@ -1,6 +1,6 @@
 {
     "functions": {
-      "api/scraper.js": {
+      "api/fetch-news-new.js": {
         "schedule": "0 0 * * *"
       }
     }
