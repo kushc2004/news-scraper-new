@@ -81,7 +81,11 @@ const fetchArticleSummary = async (articleUrl) => {
 // Function to save articles in Supabase
 const saveArticlesToSupabase = async (articles) => {
   try {
-    const { deldata, delerror } = await supabase.from('latest_insights').delete();
+    const { error: delError } = await supabase
+        .from('latest_insights')
+        .delete()
+        .neq('id', '');
+
     const { data, error } = await supabase.from('latest_insights').insert(articles);
     
     if (error) {
