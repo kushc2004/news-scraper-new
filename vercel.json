@@ -5,7 +5,7 @@
     },
     {
       "path": "/api/fetch-news-new1",
-      "schedule": "0 0 * * *"
+      "schedule": "0 2 * * *"
     }
   ]
 }
