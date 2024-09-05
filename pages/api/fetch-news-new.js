@@ -4,8 +4,14 @@ import { supabase } from '@/lib/supabaseClient'; // Import the Supabase client
 
 const links = {
   "agritech": "https://startupnews.fyi/category/agritech/",
-  "artificial-intelligence": "https://startupnews.fyi/category/artificial-intelligence/",
+  "artificialintelligence": "https://startupnews.fyi/category/artificial-intelligence/",
+  "general": "https://startupnews.fyi/category/general/",
   "edtech": "https://startupnews.fyi/category/ecommerce/",
+  "fintech": "https://startupnews.fyi/category/fintech/",
+  "healthtech": "https://startupnews.fyi/category/health-tech/",
+  "ev": "https://startupnews.fyi/category/ev/",
+  "tech": "https://startupnews.fyi/category/tech/",
+  "logistech": "https://startupnews.fyi/category/logistictech/",
 };
 
 // Function to fetch articles from a specific subcategory
@@ -84,7 +90,12 @@ const saveArticlesToSupabase = async (articles) => {
     const { error: delError } = await supabase
         .from('latest_insights')
         .delete()
-        .neq('id', 1);
+        .not('id', 'eq', '00000000-0000-0000-0000-000000000000');
+
+    if (delError) {
+          console.error('Error deleting articles:', delError.message);
+          return res.status(500).json({ error: 'Failed to delete articles' });
+        }
 
     const { data, error } = await supabase.from('latest_insights').insert(articles);
     
