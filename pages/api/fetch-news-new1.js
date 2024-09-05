@@ -3,11 +3,10 @@ import * as cheerio from 'cheerio';
 import { supabase } from '@/lib/supabaseClient'; // Import the Supabase client
 
 const links = {
-  "fintech": "https://startupnews.fyi/category/fintech/",
-  "healthtech": "https://startupnews.fyi/category/health-tech/",
-  "ev": "https://startupnews.fyi/category/ev/",
-  "tech": "https://startupnews.fyi/category/tech/",
-  "logistech": "https://startupnews.fyi/category/logistictech/",
+    "agritech": "https://startupnews.fyi/category/agritech/",
+  "artificialintelligence": "https://startupnews.fyi/category/artificial-intelligence/",
+  "general": "https://startupnews.fyi/category/general/",
+  "edtech": "https://startupnews.fyi/category/ecommerce/",
 };
 
 // Function to fetch articles from a specific subcategory
