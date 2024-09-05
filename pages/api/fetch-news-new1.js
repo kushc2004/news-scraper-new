@@ -82,15 +82,6 @@ const fetchArticleSummary = async (articleUrl) => {
 // Function to save articles in Supabase
 const saveArticlesToSupabase = async (articles) => {
   try {
-    const { error: delError } = await supabase
-        .from('latest_insights')
-        .delete()
-        .not('id', 'eq', '00000000-0000-0000-0000-000000000000');
-
-    if (delError) {
-          console.error('Error deleting articles:', delError.message);
-          return res.status(500).json({ error: 'Failed to delete articles' });
-        }
 
     const { data, error } = await supabase.from('latest_insights').insert(articles);
     
